@@ -13,6 +13,12 @@ use piston::{
     RenderArgs,
     UpdateArgs,
     MouseMoveArgs,
+    MousePressArgs,
+};
+
+use piston::mouse::{
+    Left,
+    Right,
 };
 
 use graphics::{
@@ -23,34 +29,64 @@ use graphics::{
     RelativeTransform2d,
 };
 
-pub static BLOCK_SIZE: u32 = 20;
+use block::{
+    BlockManager,
+};
+
+mod block;
+
+pub static CELL_SIZE:   u32 = 40;
+pub static CELL_WIDTH:  u32 = 10;
+pub static CELL_HEIGHT: u32 = 20;
 
 pub struct App {
     gl: Gl,        // OpenGL drawing backend.
-    block_size: f64,
+    block_manager: BlockManager,
     x: f64,
     y: f64,
 }
 
-impl Game for App {
-    fn render(&mut self, args: &RenderArgs) {
+impl App {
+    fn draw_block(&mut self, context: &Context) {
+        let block = self.block_manager.get_curr_block();
+
+        for y in range(0u32,4) {
+            for x in range(0u32,4) {
+                if *block.get((y*4 + x) as uint) {
+                    context
+                        .rect((x * CELL_SIZE) as f64, (y * CELL_SIZE) as f64,
+                              CELL_SIZE as f64, CELL_SIZE as f64)
+                        .rgba(1.0, 0.0, 0.0, 1.0)
+                        .trans(self.x, self.y)
+                        .draw(&mut self.gl);
+                }
+            }
+        }
+    }
+}
+
+impl Game<GameWindowGLFW> for App {
+    fn render(&mut self, _window: &mut GameWindowGLFW, args: &RenderArgs) {
         let context = &Context::abs(args.width as f64, args.height as f64);
         context.rgba(0.0, 0.0, 0.0, 1.0).draw(&mut self.gl);
-
-        context
-            .rect(0.0, 0.0, self.block_size * 4.0, self.block_size * 4.0)
-            .rgba(1.0, 0.0, 0.0, 0.5)
-            .trans(self.x, self.y)
-            .draw(&mut self.gl);
+        self.draw_block(context);
     }
 
-    fn update(&mut self, _args: &UpdateArgs) {
+    fn update(&mut self, _window: &mut GameWindowGLFW, _args: &UpdateArgs) {
         self.y += 1.0;
     }
 
-    fn mouse_move(&mut self, args: &MouseMoveArgs) {
+    fn mouse_move(&mut self, _window: &mut GameWindowGLFW, args: &MouseMoveArgs) {
         self.x = args.x;
         self.y = args.y;
+    }
+
+    fn mouse_press(&mut self, _window: &mut GameWindowGLFW, args: &MousePressArgs) {
+        match args.button {
+            Left => self.block_manager.rotate_block(),
+            Right => self.block_manager.get_next_block(),
+            _ => {}
+        }
     }
 }
 
@@ -59,7 +95,7 @@ fn main() {
     let mut window = GameWindowGLFW::new(
         GameWindowSettings {
             title: "My Game".to_string(),
-            size: [BLOCK_SIZE * 10, BLOCK_SIZE * 20],
+            size: [CELL_SIZE * CELL_WIDTH, CELL_SIZE * CELL_HEIGHT],
             fullscreen: false,
             exit_on_esc: true
         }
@@ -74,7 +110,7 @@ fn main() {
     // Create a new game and run it.
     let mut app = App {
         gl: Gl::new(),
-        block_size: BLOCK_SIZE as f64,
+        block_manager: BlockManager::new(),
         x: 0.0,
         y: 0.0,
     };
