@@ -23,5 +23,4 @@ git = "https://github.com/PistonDevelopers/opengl_graphics.git"
 
 [[bin]]
 
-name = "game"
-path = "src/game.rs"
+name = "piston-learning"

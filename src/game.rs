@@ -1,15 +1,8 @@
-extern crate graphics;
-extern crate piston;
-extern crate glfw_game_window;
-extern crate opengl_graphics;
-
 use glfw_game_window::GameWindowGLFW;
 use opengl_graphics::Gl;
 
 use piston::{
     Game,
-    GameWindowSettings,
-    GameIteratorSettings,
     RenderArgs,
     UpdateArgs,
     MouseMoveArgs,
@@ -33,8 +26,6 @@ use block::{
     BlockManager,
 };
 
-mod block;
-
 pub static CELL_SIZE:   u32 = 40;
 pub static CELL_WIDTH:  u32 = 10;
 pub static CELL_HEIGHT: u32 = 20;
@@ -47,6 +38,15 @@ pub struct App {
 }
 
 impl App {
+    pub fn new() -> App {
+        App {
+            gl: Gl::new(),
+            block_manager: BlockManager::new(),
+            x: 0.0,
+            y: 0.0,
+        }
+    }
+
     fn draw_block(&mut self, context: &Context) {
         let block = self.block_manager.get_curr_block();
 
@@ -92,29 +92,3 @@ impl Game<GameWindowGLFW> for App {
     }
 }
 
-fn main() {
-    // Create a GLFW window.
-    let mut window = GameWindowGLFW::new(
-        GameWindowSettings {
-            title: "My Game".to_string(),
-            size: [CELL_SIZE * CELL_WIDTH, CELL_SIZE * CELL_HEIGHT],
-            fullscreen: false,
-            exit_on_esc: true
-        }
-    );
-
-    // Some settings for how the game should be run.
-    let game_iter_settings = GameIteratorSettings {
-        updates_per_second: 60,
-        max_frames_per_second: 60
-    };
-
-    // Create a new game and run it.
-    let mut app = App {
-        gl: Gl::new(),
-        block_manager: BlockManager::new(),
-        x: 0.0,
-        y: 0.0,
-    };
-    app.run(&mut window, &game_iter_settings);
-}
