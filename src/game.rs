@@ -52,7 +52,9 @@ impl App {
 
         for y in range(0u32,4) {
             for x in range(0u32,4) {
-                if *block.get((y*4 + x) as uint) {
+                if block[(y*4 + x) as uint] {
+                    let _width = self.block_manager.get_width();
+                    let _height = self.block_manager.get_height();
                     context
                         .rect((x * CELL_SIZE) as f64, (y * CELL_SIZE) as f64,
                               CELL_SIZE as f64, CELL_SIZE as f64)

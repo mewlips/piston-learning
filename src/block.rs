@@ -100,14 +100,14 @@ impl BlockManager {
 
     pub fn get_curr_block(&self) -> &Block {
         match self.curr_block_idx {
-            (n, m) => self.blocks.get(n).get(m)
+            (n, m) => &self.blocks[n][m]
         }
     }
 
     pub fn rotate_block(&mut self) {
         self.curr_block_idx = match self.curr_block_idx {
             (n, m) => {
-                if self.blocks.get(n).len() <= (m + 1) {
+                if self.blocks[n].len() <= (m + 1) {
                     (n, 0)
                 } else {
                     (n, m + 1)
@@ -122,7 +122,7 @@ impl BlockManager {
 
         for y in range(0u, 4) {
             for x in range(0u, 4) {
-                if *curr_block.get(y*4 + x) {
+                if curr_block[y*4 + x] {
                     width = max(width, x+1);
                 }
             }
