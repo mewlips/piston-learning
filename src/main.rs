@@ -25,7 +25,8 @@ fn main() {
     let mut window = GameWindowGLFW::new(
         GameWindowSettings {
             title: "My Game".to_string(),
-            size: [game::CELL_SIZE * game::CELL_WIDTH, game::CELL_SIZE * game::CELL_HEIGHT],
+            size: [game::CELL_SIZE * game::CELL_WIDTH,
+                   game::CELL_SIZE * game::CELL_HEIGHT],
             fullscreen: false,
             exit_on_esc: true
         }
