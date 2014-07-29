@@ -18,15 +18,15 @@ use game::{
 };
 
 mod game;
-mod block;
+mod tetromino;
 
 fn main() {
     // Create a GLFW window.
     let mut window = GameWindowGLFW::new(
         GameWindowSettings {
             title: "My Game".to_string(),
-            size: [game::CELL_SIZE * game::CELL_WIDTH,
-                   game::CELL_SIZE * game::CELL_HEIGHT],
+            size: [(game::CELL_SIZE * game::CELL_WIDTH) as u32,
+                   (game::CELL_SIZE * game::CELL_HEIGHT) as u32],
             fullscreen: false,
             exit_on_esc: true
         }
