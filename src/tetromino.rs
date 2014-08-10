@@ -1,8 +1,12 @@
 use std::rand::random;
+use block::{
+    Block,
+    EmptyBlock,
+    ColorBlock,
+};
 
 pub struct Tetromino {
-    pub blocks: Vec<Vec<Vec<bool>>>,
-    pub color: (f32, f32, f32, f32)
+    pub blocks: Vec<Vec<Vec<Block>>>,
 }
 
 pub struct TetrominoManager {
@@ -19,86 +23,88 @@ impl TetrominoManager {
             next_tetromino_idx: (0,0),
         };
 
+        let empty = EmptyBlock;
+
         // I
+        let mut block = ColorBlock(1.0, 1.0, 0.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![true, true, true, true]],
-                         vec![vec![true],
-                              vec![true],
-                              vec![true],
-                              vec![true]]],
-            color: (1.0, 1.0, 0.0, 1.0)
+            blocks: vec![vec![vec![block, block, block, block]],
+                         vec![vec![block],
+                              vec![block],
+                              vec![block],
+                              vec![block]]],
         });
 
         // O
+        block = ColorBlock(1.0, 0.0, 0.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![true, true],
-                              vec![true, true]]],
-            color: (1.0, 0.0, 0.0, 1.0)
+            blocks: vec![vec![vec![block, block],
+                              vec![block, block]]],
         });
 
         // T
+        block = ColorBlock(1.0, 0.0, 1.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![false, true , false],
-                              vec![true , true , true ]],
-                         vec![vec![true , false],
-                              vec![true , true ],
-                              vec![true , false]],
-                         vec![vec![true , true , true ],
-                              vec![false, true , false]],
-                         vec![vec![false, true],
-                              vec![true , true],
-                              vec![false, true]]],
-            color: (1.0, 0.0, 1.0, 1.0)
+            blocks: vec![vec![vec![empty, block , empty],
+                              vec![block, block, block]],
+                         vec![vec![block, empty],
+                              vec![block, block],
+                              vec![block, empty]],
+                         vec![vec![block, block, block],
+                              vec![empty, block, empty]],
+                         vec![vec![empty, block],
+                              vec![block, block],
+                              vec![empty, block]]],
         });
 
         // J
+        block = ColorBlock(0.0, 1.0, 0.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![true , false, false],
-                              vec![true , true , true ]],
-                         vec![vec![true , true ],
-                              vec![true , false],
-                              vec![true , false]],
-                         vec![vec![true , true , true],
-                              vec![false, false, true]],
-                         vec![vec![false, true],
-                              vec![false, true],
-                              vec![true , true]]],
-            color: (0.0, 1.0, 0.0, 1.0)
+            blocks: vec![vec![vec![block, empty, empty],
+                              vec![block, block, block]],
+                         vec![vec![block, block],
+                              vec![block, empty],
+                              vec![block, empty]],
+                         vec![vec![block, block, block],
+                              vec![empty, empty, block]],
+                         vec![vec![empty, block],
+                              vec![empty, block],
+                              vec![block, block]]],
         });
 
         // L
+        block = ColorBlock(0.0, 1.0, 1.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![false, false, true],
-                              vec![true , true , true]],
-                         vec![vec![true , false],
-                              vec![true , false],
-                              vec![true , true ]],
-                         vec![vec![true , true , true],
-                              vec![false, false, true]],
-                         vec![vec![true , true],
-                              vec![false, true],
-                              vec![false, true]]],
-            color: (0.0, 1.0, 1.0, 1.0)
+            blocks: vec![vec![vec![empty, empty, block],
+                              vec![block, block, block]],
+                         vec![vec![block, empty],
+                              vec![block, empty],
+                              vec![block, block]],
+                         vec![vec![block, block, block],
+                              vec![empty, empty, block]],
+                         vec![vec![block, block],
+                              vec![empty, block],
+                              vec![empty, block]]],
         });
 
         // S
+        block = ColorBlock(0.0, 0.0, 1.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![false, true , true ],
-                              vec![true , true , false]],
-                         vec![vec![true , false],
-                              vec![true , true ],
-                              vec![false, true ]]],
-            color: (0.0, 0.0, 1.0, 1.0)
+            blocks: vec![vec![vec![empty, block, block],
+                              vec![block, block, empty]],
+                         vec![vec![block, empty],
+                              vec![block, block],
+                              vec![empty, block]]],
         });
 
         // Z
+        block = ColorBlock(1.0, 1.0, 1.0);
         manager.tetrominoes.push(Tetromino {
-            blocks: vec![vec![vec![true , true , false],
-                              vec![false, true , true ]],
-                         vec![vec![false, true ],
-                              vec![true , true ],
-                              vec![true , false]]],
-            color: (1.0, 1.0, 1.0, 1.0)
+            blocks: vec![vec![vec![block, block, empty],
+                              vec![empty, block, block]],
+                         vec![vec![empty, block],
+                              vec![block, block],
+                              vec![block, empty]]],
         });
 
         manager

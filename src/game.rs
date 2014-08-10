@@ -1,6 +1,5 @@
 use glfw_game_window::GameWindowGLFW;
 use opengl_graphics::Gl;
-
 use piston::{
     Game,
     RenderArgs,
@@ -8,12 +7,10 @@ use piston::{
     MouseMoveArgs,
     MousePressArgs,
 };
-
 use piston::mouse::{
     Left,
     Right,
 };
-
 use graphics::{
     Context,
     AddRectangle,
@@ -21,18 +18,23 @@ use graphics::{
     Draw,
     RelativeTransform2d,
 };
-
+use block::{
+    EmptyBlock,
+    ColorBlock,
+};
+use space::Space;
 use tetromino::{
     TetrominoManager,
 };
 
-pub static CELL_SIZE:   uint = 40;
-pub static CELL_WIDTH:  uint = 10;
-pub static CELL_HEIGHT: uint = 20;
+pub static BLOCK_SIZE:   u32 = 40;
+pub static BLOCK_WIDTH:  u32 = 10;
+pub static BLOCK_HEIGHT: u32 = 20;
 
 pub struct App {
     gl: Gl,        // OpenGL drawing backend.
     tetromino_manager: TetrominoManager,
+    space: Space,
     x: f64,
     y: f64,
 }
@@ -42,8 +44,29 @@ impl App {
         App {
             gl: Gl::new(),
             tetromino_manager: TetrominoManager::new(),
+            space: Space::new(BLOCK_WIDTH, BLOCK_HEIGHT),
             x: 0.0,
             y: 0.0,
+        }
+    }
+
+    fn draw_board(&mut self, context: &Context) {
+        for x in range(0u, BLOCK_WIDTH as uint) {
+            for y in range(0u, BLOCK_HEIGHT as uint) {
+                let block = self.space.get_block_ref(x, y);
+                match block {
+                    &EmptyBlock => {}
+                    &ColorBlock(r, g, b) => {
+                        context
+                            .rect((x as u32 * BLOCK_SIZE) as f64,
+                                  (y as u32 * BLOCK_SIZE) as f64, 
+                                  BLOCK_SIZE as f64,
+                                  BLOCK_SIZE as f64)
+                            .rgba(r, g, b, 1.0)
+                            .draw(&mut self.gl);
+                    }
+                }
+            }
         }
     }
 
@@ -52,17 +75,21 @@ impl App {
         let height = self.tetromino_manager.get_height();
         let (tetromino, v) = self.tetromino_manager.get_curr_tetromino();
         let blocks = &tetromino.blocks[v];
-        let (r, g, b, a) = tetromino.color;
 
         for y in range(0u, height) {
             for x in range(0u, width) {
-                if blocks[y][x] {
-                    context
-                        .rect((x * CELL_SIZE) as f64, (y * CELL_SIZE) as f64,
-                              CELL_SIZE as f64, CELL_SIZE as f64)
-                        .rgba(r, g, b, a)
-                        .trans(self.x, self.y)
-                        .draw(&mut self.gl);
+                match &blocks[y][x] {
+                    &EmptyBlock => {}
+                    &ColorBlock(r, g, b) => {
+                        context
+                            .rect((x as u32 * BLOCK_SIZE) as f64,
+                                  (y as u32 * BLOCK_SIZE) as f64,
+                                  BLOCK_SIZE as f64,
+                                  BLOCK_SIZE as f64)
+                            .rgba(r, g, b, 1.0)
+                            .trans(self.x, self.y)
+                            .draw(&mut self.gl);
+                    }
                 }
             }
         }
@@ -73,6 +100,7 @@ impl Game<GameWindowGLFW> for App {
     fn render(&mut self, _window: &mut GameWindowGLFW, args: &RenderArgs) {
         let context = &Context::abs(args.width as f64, args.height as f64);
         context.rgba(0.0, 0.0, 0.0, 1.0).draw(&mut self.gl);
+        self.draw_board(context);
         self.draw_tetromino(context);
     }
 

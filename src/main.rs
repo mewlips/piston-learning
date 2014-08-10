@@ -9,15 +9,16 @@ use piston::{
     GameIteratorSettings,
     GameWindowSettings,
 };
-
 use game::{
     App,
-    CELL_SIZE,
-    CELL_WIDTH,
-    CELL_HEIGHT
+    BLOCK_SIZE,
+    BLOCK_WIDTH,
+    BLOCK_HEIGHT,
 };
 
 mod game;
+mod block;
+mod space;
 mod tetromino;
 
 fn main() {
@@ -25,8 +26,9 @@ fn main() {
     let mut window = GameWindowGLFW::new(
         GameWindowSettings {
             title: "My Game".to_string(),
-            size: [(game::CELL_SIZE * game::CELL_WIDTH) as u32,
-                   (game::CELL_SIZE * game::CELL_HEIGHT) as u32],
+            //size: [game.getBoardWidth(), game.getBoardHeight()],
+            size: [(game::BLOCK_SIZE * game::BLOCK_WIDTH) as u32,
+                   (game::BLOCK_SIZE * game::BLOCK_HEIGHT) as u32],
             fullscreen: false,
             exit_on_esc: true
         }
